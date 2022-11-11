@@ -1,0 +1,124 @@
+
+CREATE TYPE grade_type AS ENUM ('junior','middle','senior');
+CREATE TYPE score_type AS ENUM ('A','B','C','D');
+
+CREATE TABLE IF NOT EXISTS departments (
+	id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	name VARCHAR(255) NOT NULL,
+	director_name VARCHAR(255),
+	employee_count SMALLINT);
+
+
+INSERT INTO departments(
+name,
+director_name,
+employee_count)
+VALUES
+('data engineering','Ivanov',3),
+('data analyst','Pushkin',2)
+
+
+CREATE TABLE IF NOT EXISTS employees
+(
+	id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	surname VARCHAR (255) NOT NULL,
+	birthdate DATA NOT NULL,
+	grade grade_type NOT NULL,
+	salary INT,
+	department_id INT,
+	driver_license BOOLEAN,
+	CONSTRAINT department_fk
+		FOREIGN KEY (department_id)
+		REFERENCES departments(id)
+		ON DELETE CASCADE);
+
+
+INSERT INTO employees (
+surname,
+birthdate,
+grade ,
+salary ,
+department_id ,
+driver_license 
+)
+VALUES 
+	('Ivanov','1995-02-27','middle',150000,1,False),
+	('Petrov','1994-03-17','junior',80000,1,False),
+	('Sidorov','1993-04-25','senior',250000,1,True),
+	('Pushkin','1991-05-20','middle',130000,2,True),
+	('Lermontov','1990-06-11','junior',70000,2,False)
+
+
+
+CREATE TABLE IF NOT EXISTS scores (
+	score_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+	employee_id INT,
+	q1 score_type,
+	q2 score_type,
+	q3 score_type,
+	q4 score_type
+	CONSTRAINT employee_fk
+		FOREIGN KEY (employee_id)
+		REFERENCES employees(id)
+		ON DELETE CASCADE);
+
+INSERT INTO scores (
+employee_id,
+q1,
+q2,
+q3,
+q4)
+VALUES
+(2,'A','B','C','A'),
+(3,'B','B','A','A'),
+(4,'C','B','C','B'),
+(5,'D','B','C','C'),
+(6,'D','B','C','B')
+
+INSERT INTO departments(
+name,
+director_name,
+employee_count)
+VALUES
+('intellect data analyst','Fedorov',1)
+
+INSERT INTO employees (
+surname,
+birthdate,
+grade ,
+salary ,
+department_id ,
+driver_license 
+)
+VALUES 
+	('Fedorov','1989-10-10','senior',180000,3,True),
+	('Nikolaev','1989-09-08','junior',80000,3,True)
+
+INSERT INTO scores (
+employee_id,
+q1,
+q2,
+q3,
+q4)
+VALUES
+(7,'C','C','C','A'),
+(8,'D','C','A','A')
+
+ALTER TABLE employees  ADD COLUMN begin_work DATE;
+UPDATE employees  SET begin_work = '2020-03-03' WHERE id  = 2;
+UPDATE employees  SET begin_work = '2019-09-09' WHERE id  = 3;	
+UPDATE employees  SET begin_work = '2021-03-03' WHERE id  = 4;
+UPDATE employees  SET begin_work = '2020-09-09' WHERE id  = 5;	
+UPDATE employees  SET begin_work = '2020-03-03' WHERE id  = 6;
+UPDATE employees  SET begin_work = '2022-09-09' WHERE id  = 7;	
+UPDATE employees  SET begin_work = '2020-03-03' WHERE id  = 8;
+
+
+select id, surname, (CURRENT_DATE-begin_work)/365 as стаж from employees e ;
+select id, surname, (CURRENT_DATE-begin_work)/365 as стаж from employees e limit 3;
+select id, driver_license  from employees e where driver_license = True;
+select employee_id, q1 from scores s where q1='D'
+select max (salary) from employees e;
+
+
+
