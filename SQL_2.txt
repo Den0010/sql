@@ -1,7 +1,7 @@
 
 select surname, salary  from employees e where salary=(select max(salary) from employees e2 );
 select surname from employees e where id>0 order by surname ;
-select grade, avg((CURRENT_DATE-begin_work)/365) as "средний стаж middle" from employees e group by grade  ;
+select grade, avg((CURRENT_DATE-begin_work)/365) as "средний стаж" from employees e group by grade  ;
 
 select surname,d.name  from employees e
 	join departments d on e.department_id = d.id;
